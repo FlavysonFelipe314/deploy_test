@@ -1,0 +1,28 @@
+version: '3.7'
+services:
+  app:
+    build: .
+    container_name: ${COOLIFY_APP_ID}-app
+    volumes:
+      - .:/var/www/html
+    expose:
+      - '9000'
+    command: php-fpm
+
+  web:
+    image: nginx:alpine
+    container_name: ${COOLIFY_APP_ID}-web
+    ports:
+      - 80:80
+    expose:
+      - '80'
+    volumes:
+      - .:/var/www/html
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+
+# A rede interna que conecta os dois serviços
+networks:
+  default:
+    name: ${COOLIFY_APP_ID}_default
